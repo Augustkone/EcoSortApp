@@ -36,6 +36,34 @@ def scrap_jumia(keyword: str, max_results: int = 5) -> list[dict]:
     
     #parcours de la liste de produits
     for produit in produits:
+        """
+            Recherche des produits sur Jumia CI à partir d'un mot-clé.
+
+    Structure HTML ciblée sur la page de résultats :
+
+        <a class="core" href="/nom-du-produit-12345.html">
+            <div class="img-c">
+                <img data-src="URL_IMAGE" src="URL_IMAGE_FALLBACK" />
+            </div>
+            <div class="info">
+                <h3 class="name">Nom du produit</h3>
+                <div class="prc">Prix affiché (ex: 3,900 FCFA)</div>
+                <div class="rev">
+                    <div class="stars _s">Note sur 5 (ex: "2.3 out of 5")</div>
+                    "(Nombre d'avis)"
+                </div>
+            </div>
+        </a>
+
+    Args:
+        keyword: Mot-clé de recherche saisi par l'utilisateur (ex: "shampooing").
+        max_results: Nombre maximum de produits à retourner (défaut: 5).
+
+    Returns:
+        Une liste de dictionnaires, un par produit trouvé, avec les clés :
+        "nom", "prix", "image", "note", "lien".
+        Retourne une liste vide si la requête échoue.
+        """
         #ne pas dépasser le nombre de produit à retourner (par défaut 5)
         if len(resultats) >= max_results:
             break
