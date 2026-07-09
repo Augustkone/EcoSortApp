@@ -92,3 +92,9 @@ def scrap_jumia(keyword: str, max_results: int = 5) -> list[dict]:
         })
     return resultats
 
+# Test de la fonction
+if __name__ == "__main__":
+    resultats = scrap_jumia("shampooing")
+    for r in resultats:
+        print(r)
+        print("---")
