@@ -24,7 +24,7 @@ def scrap_jumia(keyword: str, max_results: int = 5) -> list[dict]:
     #url de la page du résultat de recherche
     url = f"https://www.jumia.ci/catalog/?q={keyword}"
         
-    #gestion du cas où on aurait les erreurs suivantes
+    #gestion des cas où la requête ne fonctionne pas. cas possibles
     #Pas de connexion internet, timeout, DNS introuvable, etc
     try:
         response = requests.get(url, headers=headers, timeout=10)
@@ -32,7 +32,7 @@ def scrap_jumia(keyword: str, max_results: int = 5) -> list[dict]:
         # Pas de connexion internet, timeout, DNS introuvable, etc.
         return []
     
-    #gestion d'erreur. retourner une liste vide en cas d'erreur au lieu de buger
+    #cas où la requête aboutit mais le serveur répond mal
     if response.status_code != 200:
         return []
     
