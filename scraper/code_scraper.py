@@ -23,7 +23,24 @@ def scrap_jumia(keyword: str, max_results: int = 5) -> list[dict]:
     }
     #url de la page du résultat de recherche
     url = f"https://www.jumia.ci/catalog/?q={keyword}"
+    response = requests.get(url, headers=headers)
+    #gestion d'erreur. retourner une liste vide en cas d'erreur au lieu de buger
+    if response.status_code != 200:
+        return []
     
+    soup = BeautifulSoup(response.text, "lxml")
+    #chaque produit du résultat de recherche se trouve dans une balise "a", de classe "core"
+    produits = soup.find_all("a", class_="core")
+    
+    resultats = []
+    
+    #parcours de la liste de produits
+    for produit in produits:
+        #ne pas dépasser le nombre de produit à retourner (par défaut 5)
+        if len(resultats) >= max_results:
+            break
+        
+        
 
 
 with open("test.html", "r", encoding="utf-8") as f:
