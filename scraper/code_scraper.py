@@ -10,8 +10,21 @@ Package utilisé pour le scraping : beautifulsoup (craping), request
 
 """
 
-
+import requests
 from bs4 import BeautifulSoup
+
+
+#définition de la fonction
+def scrap_jumia(keyword: str, max_results: int = 5) -> list[dict]:
+    #utile pour se faire passer pour un vrai navigateur au moment du scraping
+    #pour éviter des blocages éventuellement prévus par les développeur du site
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+    }
+    #url de la page du résultat de recherche
+    url = f"https://www.jumia.ci/catalog/?q={keyword}"
+    
+
 
 with open("test.html", "r", encoding="utf-8") as f:
     html = f.read()
