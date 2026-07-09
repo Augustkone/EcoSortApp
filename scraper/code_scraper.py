@@ -6,4 +6,6 @@ Il s'agit de ramener les infos suivantes pour les cinq premiers produit du résu
 - Image du produit (lien)
 - Notation (sur 5)
 
+Package utilisé pour le scraping : beautifulsoup
+
 """
