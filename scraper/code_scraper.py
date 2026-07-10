@@ -102,7 +102,7 @@ def scrap_jumia(keyword: str, max_results: int = 5) -> list[dict]:
 
 # Test de la fonction
 if __name__ == "__main__":
-    resultats = scrap_jumia("tendeuse")
+    resultats = scrap_jumia("POWERBANK", 2)
     for r in resultats:
         print(r)
         print("---")
