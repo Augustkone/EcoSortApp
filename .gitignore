@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# A copier-coller a la fin du .gitignore existant a la racine du repo EcoSortApp
+
+# Dataset et modele entraine (trop lourds pour Git)
+model/data/raw/
+model/data/splits/
+model/models/*.h5
+model/models/*.keras
+model/models/*.png
