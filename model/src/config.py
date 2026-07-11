@@ -30,6 +30,12 @@ CLASS_TO_BIN = {
 # Elle doit être détectée en amont (catégorie produit Jumia ou mots-clés du nom
 # de produit) avant même d'appeler le modèle d'image. Voir README.md.
 
+# Seuil de confiance minimal pour valider une prédiction. En dessous, le résultat
+# est considéré comme incertain plutôt que d'imposer une réponse fausse avec
+# assurance : cas typique d'une image Jumia contenant plusieurs produits, un
+# emballage multi-matières, ou un fort encombrement visuel (logos, badges promo).
+CONFIDENCE_THRESHOLD = 0.6
+
 # Entraînement
 INITIAL_EPOCHS = 15
 FINE_TUNE_EPOCHS = 10

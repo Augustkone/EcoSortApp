@@ -31,9 +31,21 @@ def predict_image(image_path: str, model=None, class_names=None) -> dict:
     idx = int(np.argmax(predictions))
     predicted_class = class_names[idx]
     confidence = float(predictions[idx])
-    bin_color = config.CLASS_TO_BIN.get(predicted_class, "INCONNU (probablement D3E)")
+    is_certain = confidence >= config.CONFIDENCE_THRESHOLD
 
-    return {"classe": predicted_class, "confiance": round(confidence, 4), "poubelle": bin_color}
+    if is_certain:
+        bin_color = config.CLASS_TO_BIN.get(predicted_class, "INCONNU (probablement D3E)")
+    else:
+        # Confiance trop faible : probablement une image ambiguë (plusieurs
+        # produits, matières mélangées). On ne force pas une réponse fausse.
+        bin_color = "INCERTAIN"
+
+    return {
+        "classe": predicted_class,
+        "confiance": round(confidence, 4),
+        "poubelle": bin_color,
+        "certain": is_certain,
+    }
 
 
 if __name__ == "__main__":
