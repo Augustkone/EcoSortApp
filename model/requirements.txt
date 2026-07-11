@@ -1,4 +1,4 @@
-tensorflow>=2.15,<2.17
+tensorflow>=2.18
 numpy
 pillow
 scikit-learn

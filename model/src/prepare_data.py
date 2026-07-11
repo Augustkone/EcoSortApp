@@ -40,6 +40,6 @@ def split(source_dir):
 
 if __name__ == "__main__":
     download()
-    # Adapter ce chemin selon la structure réelle une fois le zip dézippé
-    # (vérifier avec `ls data/raw` le nom exact du sous-dossier contenant les classes)
-    split(config.RAW_DATA_DIR)
+    # Ce dataset se dézippe avec un double dossier imbriqué :
+    # data/raw/Garbage classification/Garbage classification/<classe>/
+    split(config.RAW_DATA_DIR / "Garbage classification" / "Garbage classification")
