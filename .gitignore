@@ -217,11 +217,12 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# A copier-coller a la fin du .gitignore existant a la racine du repo EcoSortApp
-
-# Dataset et modele entraine (trop lourds pour Git)
+# Dataset Kaggle (trop volumineux pour Git, chacun le regenere localement)
 model/data/raw/
 model/data/splits/
-model/models/*.h5
-model/models/*.keras
-model/models/*.png
+
+# Checkpoint intermediaire d'entrainement, redondant avec le modele final .h5
+# (modele_eco_sort.h5 et class_names.json restent volontairement versionnes :
+# l'app du Jalon 2 doit pouvoir charger le modele apres un simple clone, sans
+# etape d'entrainement ni telechargement externe)
+model/models/*_best.keras

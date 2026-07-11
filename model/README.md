@@ -67,4 +67,4 @@ Voir `data/README.md` pour la configuration de l'accès à l'API Kaggle.
 
 ## Livrable
 
-Le fichier `models/modele_eco_sort.h5` (jamais versionné sur Git, à fournir séparément à l'équipe ou régénéré par CI/CD) ainsi que `models/class_names.json` sont les deux fichiers attendus par l'application Streamlit pour le Jalon 2.
+Le fichier `models/modele_eco_sort.h5` ainsi que `models/class_names.json` sont les deux fichiers attendus par l'application Streamlit pour le Jalon 2. Contrairement au dataset, ils sont volontairement versionnés sur Git : l'énoncé n'interdit que le dataset Kaggle et les environnements virtuels, et l'application doit pouvoir charger le modèle immédiatement après un `git clone`, sans étape d'entraînement ni téléchargement externe, pour que la commande `docker build` fonctionne du premier coup chez le professeur. Le checkpoint intermédiaire `*_best.keras` produit pendant l'entraînement n'est en revanche pas versionné, il est redondant avec le `.h5` final.
