@@ -16,8 +16,10 @@ model/
 │   ├── dataset.py       # pipelines tf.data + augmentation
 │   ├── model.py         # architecture MobileNetV2 (transfer learning)
 │   ├── train.py         # entraînement en 2 phases (tête puis fine-tuning)
+│   ├── finetune.py      # fine-tuning complémentaire sur photos de catalogue (Jumia, Amazon...)
 │   ├── evaluate.py       # rapport de classification + matrice de confusion
-│   └── predict.py       # prédiction sur une image unique
+│   ├── predict.py       # prédiction sur une image unique
+│   └── upstream_filters.py  # detection D3E/vaisselle avant d'appeler le modele
 └── requirements.txt
 ```
 
@@ -41,19 +43,27 @@ La première consiste à détecter le D3E en amont du modèle d'image, en s'appu
 
 La seconde consiste à collecter une petite banque d'images d'appareils électroniques et à ajouter une septième classe au modèle. C'est plus long à mettre en place mais rend le modèle autonome. Le fichier `config.py` est déjà écrit pour accueillir cette classe supplémentaire le jour où elle existera : il suffira d'ajouter un dossier `electronics/` dans les données et une entrée dans `CLASS_TO_BIN`.
 
+La première option est déjà implémentée et prête à être branchée par l'application : `src/upstream_filters.py` expose `classify_before_image_model(nom_produit, categorie_produit)`, qui renvoie `"D3E"` si le nom ou la catégorie du produit correspond à un mot-clé de `config.D3E_KEYWORDS` ou `config.D3E_CATEGORIES`, `None` sinon. L'application doit appeler cette fonction avant `predict_image()` et ne solliciter le modèle que si elle renvoie `None`.
+
 ## Verre d'emballage contre vaisselle
 
 Un test manuel sur une photo réelle d'un verre à eau Jumia a révélé un second trou du même type que le D3E. Le brief précise explicitement que la poubelle VERTE ne concerne que les "verres d'emballage" (bouteilles, pots, bocaux) et interdit la vaisselle, une distinction qui a un sens réel puisque le verre de vaisselle a une composition chimique différente du verre d'emballage et contamine le circuit de recyclage s'il y est mélangé. Or la classe `glass` du dataset Kaggle ne fait pas cette distinction, donc le modèle ne peut structurellement pas différencier une bouteille en verre d'un verre à boire.
 
 Sur ce test précis, le modèle a répondu `metal` avec seulement 0.41 de confiance, donc classé `INCERTAIN` grâce au seuil de confiance plutôt qu'une réponse fausse assurée, probablement à cause des reflets du verre transparent qui perturbent visuellement le modèle.
 
-La solution recommandée est la même que pour le D3E : détecter des mots-clés comme "verre à boire", "gobelet" ou "vaisselle" dans le nom du produit Jumia, en amont du modèle d'image, et orienter directement ces produits vers la poubelle MARRON sans solliciter le modèle. Le D3E et la vaisselle sont donc deux illustrations du même principe : le modèle d'image couvre bien les catégories représentées dans le dataset Kaggle, mais toute catégorie absente doit être filtrée avant lui, pas après.
+La solution recommandée est la même que pour le D3E, et elle est implémentée dans la même fonction : `classify_before_image_model()` renvoie `"MARRON"` si le nom du produit correspond à `config.VAISSELLE_KEYWORDS` ("verre à boire", "gobelet", "vaisselle"...). Le D3E et la vaisselle sont donc deux illustrations du même principe, gérées par le même mécanisme : le modèle d'image couvre bien les catégories représentées dans le dataset Kaggle, mais toute catégorie absente doit être filtrée avant lui, pas après.
 
 ## Résultats obtenus sur le premier modèle entraîné
 
 Le premier entraînement complet atteint 85% de précision sur le jeu de test (six classes). Le détail par classe montre un modèle solide sur `cardboard` et `paper` (autour de 0.90 de précision), un peu plus fragile sur `metal` (précision de 0.75, confondu par moments avec `plastic`) et sur `trash` (rappel de 0.77, classe la plus petite et la plus hétérogène visuellement). La matrice de confusion complète est disponible dans `models/matrice_confusion.png`.
 
 Des tests manuels sur de vraies photos Jumia confirment ce diagnostic : une canette a été classée `plastic` au lieu de `metal`, sans conséquence pratique puisque les deux sont mappées vers la même poubelle JAUNE dans `config.py`. Ce regroupement en 5 catégories officielles absorbe une partie des erreurs fines du modèle à 6 classes.
+
+## Adaptation aux photos de catalogue (Jumia, Amazon...)
+
+Le dataset Kaggle reste composé de photos de déchets isolés, pas de fiches produit e-commerce. Pour réduire davantage l'écart de domaine évoqué plus haut, `src/finetune.py` ajoute une étape optionnelle : repartir du modèle déjà entraîné et lui faire faire quelques passages supplémentaires, à très faible taux d'apprentissage, sur un petit jeu de vraies photos de catalogue organisées par classe dans `data/finetune/` (voir `data/finetune/README.md` pour la collecte et l'organisation des images).
+
+Cette étape est volontairement séparée de l'entraînement principal et sauvegarde un fichier distinct, `models/modele_eco_sort_v2.h5`, à comparer avec le modèle officiel avant toute décision de remplacement. Le jeu de photos de catalogue n'est pas versionné sur Git (droit d'auteur des images produit), chaque membre de l'équipe le reconstitue localement en suivant les instructions du README du dossier.
 
 ## Images Jumia contenant plusieurs éléments
 
