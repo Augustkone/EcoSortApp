@@ -229,3 +229,9 @@ model/models/*_best.keras
 
 # Images de test manuel recuperees sur Jumia (pas un livrable)
 model/data/jumia_samples/
+
+# Images de catalogue (Jumia, Amazon...) utilisees pour le fine-tuning :
+# potentiellement soumises a droit d'auteur, jamais poussees sur GitHub.
+# Seul le README expliquant comment les reconstituer reste versionne.
+model/data/finetune/*
+!model/data/finetune/README.md
