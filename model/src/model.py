@@ -3,7 +3,6 @@ from typing import Optional
 
 from tensorflow.keras import layers, Model
 from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 from . import config
 
@@ -25,7 +24,10 @@ def build_model(num_classes: int, fine_tune_at: Optional[int] = None) -> Model:
             layer.trainable = False
 
     inputs = layers.Input(shape=config.IMG_SIZE + (3,))
-    x = preprocess_input(inputs)
+    # Equivalent a mobilenet_v2.preprocess_input (x/127.5 - 1), mais via une
+    # vraie couche Keras native : les fonctions TF brutes appliquees directement
+    # sur le tenseur ne se resauvegardent pas correctement au format .h5.
+    x = layers.Rescaling(scale=1.0 / 127.5, offset=-1.0)(inputs)
     x = base_model(x)
     x = layers.GlobalAveragePooling2D()(x)
     x = layers.Dropout(0.3)(x)
