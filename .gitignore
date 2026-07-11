@@ -226,3 +226,6 @@ model/data/splits/
 # l'app du Jalon 2 doit pouvoir charger le modele apres un simple clone, sans
 # etape d'entrainement ni telechargement externe)
 model/models/*_best.keras
+
+# Images de test manuel recuperees sur Jumia (pas un livrable)
+model/data/jumia_samples/
