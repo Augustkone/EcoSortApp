@@ -216,3 +216,22 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dataset Kaggle (trop volumineux pour Git, chacun le regenere localement)
+model/data/raw/
+model/data/splits/
+
+# Checkpoint intermediaire d'entrainement, redondant avec le modele final .h5
+# (modele_eco_sort.h5 et class_names.json restent volontairement versionnes :
+# l'app du Jalon 2 doit pouvoir charger le modele apres un simple clone, sans
+# etape d'entrainement ni telechargement externe)
+model/models/*_best.keras
+
+# Images de test manuel recuperees sur Jumia (pas un livrable)
+model/data/jumia_samples/
+
+# Images de catalogue (Jumia, Amazon...) utilisees pour le fine-tuning :
+# potentiellement soumises a droit d'auteur, jamais poussees sur GitHub.
+# Seul le README expliquant comment les reconstituer reste versionne.
+model/data/finetune/*
+!model/data/finetune/README.md
