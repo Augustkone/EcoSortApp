@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 # ♻️ EcoSortApp
+=======
+#  EcoSortApp
 
 Application web d'aide au tri sélectif pour les citoyens ivoiriens. L'utilisateur recherche un produit, prend une photo ou importe une image, et l'application lui indique la poubelle exacte à utiliser grâce à un modèle de deep learning combiné à un scraping en direct de Jumia.
 
