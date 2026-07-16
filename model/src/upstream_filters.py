@@ -46,15 +46,15 @@ def is_vaisselle(nom_produit: str, categorie_produit: str = "") -> bool:
     return any(mot in texte for mot in mots_cles)
 
 
-def classify_before_image_model(nom_produit: str, categorie_produit: str = ""):
+def classify_before_image_model(nom_produit: str, categorie_produit: str = "", mot_cle_recherche: str = ""):
     """Retourne "D3E" ou "MARRON" si le produit doit etre tranche sans le
     modele d'image, sinon None (le modele d'image doit alors etre appele)."""
-    if is_d3e(nom_produit, categorie_produit):
+    texte_complet = f"{nom_produit} {categorie_produit} {mot_cle_recherche}"
+    if is_d3e(nom_produit, f"{categorie_produit} {mot_cle_recherche}"):
         return "D3E"
-    if is_vaisselle(nom_produit, categorie_produit):
+    if is_vaisselle(nom_produit, f"{categorie_produit} {mot_cle_recherche}"):
         return "MARRON"
     return None
-
 
 if __name__ == "__main__":
     nom = sys.argv[1] if len(sys.argv) > 1 else ""
