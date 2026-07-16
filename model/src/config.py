@@ -19,6 +19,7 @@ SEED = 42
 
 # Classes natives du dataset Kaggle "Garbage Classification"
 CLASS_NAMES = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
+# Convertit les codes du modèle IA (français, majuscules) vers les codes UI (utils.py)
 
 # Correspondance classes du modèle -> poubelles officielles du projet EcoSort
 CLASS_TO_BIN = {

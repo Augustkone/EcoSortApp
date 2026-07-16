@@ -5,9 +5,9 @@ Recherche des produits sur Jumia CI à partir d'un mot-clé.
 ## Utilisation
 
 ```python
-from search_jumia import search_jumia
+from code_scraper import scrap_jumia
 
-resultats = search_jumia("shampooing")
+resultats = scrap_jumia("shampooing")
 ```
 
 Retourne une liste de dictionnaires (max 5 par défaut) :
