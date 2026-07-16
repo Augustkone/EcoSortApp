@@ -81,8 +81,11 @@ def show_analysis_dialog(prod):
 
     if st.button("♻️ Analyser et trouver la poubelle", type="primary", use_container_width=True):
         with st.spinner("Analyse en cours..."):
-            filtre = classify_before_image_model(prod["nom"], prod.get("categorie", ""))
-
+            filtre = classify_before_image_model(
+                 prod["nom"],
+                 prod.get("categorie", ""),
+                 st.session_state.get("kw_input", "")
+            )
             if filtre is not None:
                 code_normalise = BIN_CODE_MAPPING.get(filtre, "marron")
                 st.session_state.prediction = {
