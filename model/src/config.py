@@ -38,13 +38,24 @@ CLASS_TO_BIN = {
 # Mots-clés (nom de produit) et catégories Jumia signalant du D3E : à détecter
 # avant d'appeler le modèle d'image, jamais après.
 D3E_KEYWORDS = [
-    "telephone", "téléphone", "smartphone", "ecouteur", "écouteur",
-    "chargeur", "batterie", "pile", "mixeur", "montre", "ordinateur",
-    "tablette", "casque", "cable", "câble", "console", "imprimante",
-    "aspirateur", "bouilloire", "rasoir electrique", "rasoir électrique",
-    "ventilateur", "climatiseur", "refrigerateur", "réfrigérateur",
-    "television", "télévision", "enceinte", "haut-parleur", "camera",
-    "caméra", "manette", "clavier", "souris", "routeur", "powerbank",
+    "telephone", "téléphone", "smartphone", "gsm", "portable",
+    "ecouteur", "écouteur", "earbuds", "airpods",
+    "chargeur", "batterie", "pile", "powerbank", "power bank",
+    "mixeur", "blender", "montre", "smartwatch",
+    "ordinateur", "laptop", "pc portable", "tablette", "tablet",
+    "casque", "cable", "câble", "usb",
+    "console", "manette", "playstation", "xbox", "nintendo",
+    "imprimante", "scanner",
+    "aspirateur", "bouilloire", "grille-pain", "micro-onde",
+    "rasoir electrique", "rasoir électrique", "epilateur", "épilateur",
+    "ventilateur", "climatiseur", "climatiseur", "ventilateur",
+    "refrigerateur", "réfrigérateur", "congelateur", "congélateur",
+    "television", "télévision", "tv", "ecran", "écran", "moniteur",
+    "enceinte", "haut-parleur", "bluetooth", "radio",
+    "camera", "caméra", "appareil photo", "webcam",
+    "clavier", "souris", "routeur", "modem", "wifi",
+    "fer a repasser", "fer à repasser", "sechoir", "sèchoir",
+    "friteuse", "cafetiere", "cafetière", "machine a cafe", "machine à café",
 ]
 D3E_CATEGORIES = [
     "telephonie", "téléphonie", "informatique", "electromenager",
