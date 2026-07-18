@@ -15,6 +15,7 @@ RUN pip install --no-cache-dir -r app-requirements.txt \
 COPY app/ ./app/
 COPY model/ ./model/
 COPY scraper/ ./scraper/
+COPY .streamlit/ ./.streamlit/
 
 EXPOSE 8501
 
