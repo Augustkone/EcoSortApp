@@ -54,11 +54,13 @@ Sur ce test précis, le modèle a répondu `metal` avec seulement 0.41 de confia
 
 La solution recommandée est la même que pour le D3E, et elle est implémentée dans la même fonction : `classify_before_image_model()` renvoie `"MARRON"` si le nom du produit correspond à `config.VAISSELLE_KEYWORDS` ("verre à boire", "gobelet", "vaisselle"...). Le D3E et la vaisselle sont donc deux illustrations du même principe, gérées par le même mécanisme : le modèle d'image couvre bien les catégories représentées dans le dataset Kaggle, mais toute catégorie absente doit être filtrée avant lui, pas après.
 
-## Résultats obtenus sur le premier modèle entraîné
+## Résultats obtenus
 
-Le premier entraînement complet atteint 85% de précision sur le jeu de test (six classes). Le détail par classe montre un modèle solide sur `cardboard` et `paper` (autour de 0.90 de précision), un peu plus fragile sur `metal` (précision de 0.75, confondu par moments avec `plastic`) et sur `trash` (rappel de 0.77, classe la plus petite et la plus hétérogène visuellement). La matrice de confusion complète est disponible dans `models/matrice_confusion.png`.
+Le premier entraînement à six classes atteignait 85% de précision sur le jeu de test. Le détail par classe montrait un modèle solide sur `cardboard` et `paper` (autour de 0.90 de précision), un peu plus fragile sur `metal` (précision de 0.75, confondu par moments avec `plastic`) et sur `trash` (rappel de 0.77, classe la plus petite et la plus hétérogène visuellement).
 
-Des tests manuels sur de vraies photos Jumia confirment ce diagnostic : une canette a été classée `plastic` au lieu de `metal`, sans conséquence pratique puisque les deux sont mappées vers la même poubelle JAUNE dans `config.py`. Ce regroupement en 5 catégories officielles absorbe une partie des erreurs fines du modèle à 6 classes.
+Après l'ajout de la septième classe `electronics` (voir section suivante), la précision globale reste à 85%, mais avec un résultat notable : `electronics` obtient 0.98 de précision et 1.00 de rappel, la classe la mieux reconnue de tout le modèle, ce qui confirme que les appareils électroniques ont une apparence suffisamment distincte des six autres matières pour être appris facilement. Le rappel de `trash` a en revanche baissé à 0.50 sur ce second entraînement, à surveiller mais probablement de la variance normale étant donné le très petit nombre d'exemples de test pour cette classe (22 images). La matrice de confusion à jour est disponible dans `models/matrice_confusion.png`.
+
+Des tests manuels sur de vraies photos Jumia confirment le diagnostic sur les matières de base : une canette a été classée `plastic` au lieu de `metal`, sans conséquence pratique puisque les deux sont mappées vers la même poubelle JAUNE dans `config.py`. Ce regroupement en 5 catégories officielles absorbe une partie des erreurs fines du modèle. Sur le D3E, un casque audio et une bouilloire, qui ressortaient auparavant en `INCERTAIN` faute de classe électronique, sont désormais correctement reconnus via l'application.
 
 ## Adaptation aux photos de catalogue (Jumia, Amazon...)
 
