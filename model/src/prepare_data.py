@@ -40,6 +40,6 @@ def split(source_dir):
 
 if __name__ == "__main__":
     download()
-    # Ce dataset se dézippe avec un double dossier imbriqué :
-    # data/raw/Garbage classification/Garbage classification/<classe>/
-    split(config.RAW_DATA_DIR / "Garbage classification" / "Garbage classification")
+    # Ce dataset se dézippe avec un double dossier imbriqué, voir
+    # config.GARBAGE_RAW_SUBDIR.
+    split(config.GARBAGE_RAW_SUBDIR)
