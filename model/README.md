@@ -13,6 +13,7 @@ model/
 ├── src/
 │   ├── config.py        # chemins, hyperparamètres, correspondance classes -> poubelles
 │   ├── prepare_data.py  # téléchargement Kaggle + split train/val/test
+│   ├── prepare_electronics_data.py  # ajoute la classe "electronics" (D3E), equilibree
 │   ├── dataset.py       # pipelines tf.data + augmentation
 │   ├── model.py         # architecture MobileNetV2 (transfer learning)
 │   ├── train.py         # entraînement en 2 phases (tête puis fine-tuning)
@@ -37,13 +38,13 @@ Pour limiter ce risque, le pipeline applique une augmentation de données assez 
 
 ## Le problème de la catégorie D3E (électronique)
 
-Le dataset Kaggle ne contient aucune classe électronique. Le modèle d'image seul ne peut donc pas reconnaître un smartphone ou un chargeur comme relevant du bac D3E : il les classera probablement dans `plastic` ou `metal` par erreur. Deux options existent pour combler ce trou, à trancher avec l'équipe.
+Le dataset Kaggle de base ne contient aucune classe électronique. Le modèle d'image seul ne pouvait donc pas reconnaître un smartphone ou un chargeur comme relevant du bac D3E : il les classait probablement dans `plastic` ou `metal` par erreur. Deux options existent pour combler ce trou, et les deux sont désormais implémentées, en complément l'une de l'autre plutôt qu'en alternative.
 
-La première consiste à détecter le D3E en amont du modèle d'image, en s'appuyant sur la catégorie du produit telle que renvoyée par le scraping Jumia (rayon "Téléphonie", "Informatique", "Électroménager") ou sur des mots-clés du nom de produit. C'est la solution la plus fiable et la moins coûteuse, puisqu'elle ne demande aucune donnée supplémentaire.
+La première détecte le D3E en amont du modèle d'image, en s'appuyant sur la catégorie du produit telle que renvoyée par le scraping Jumia (rayon "Téléphonie", "Informatique", "Électroménager") ou sur des mots-clés du nom de produit. C'est la solution la plus rapide et la moins coûteuse, puisqu'elle ne demande aucune donnée supplémentaire. Elle est implémentée dans `src/upstream_filters.py`, qui expose `classify_before_image_model(nom_produit, categorie_produit, mot_cle_recherche)`, appelée par l'application avant même de charger le modèle.
 
-La seconde consiste à collecter une petite banque d'images d'appareils électroniques et à ajouter une septième classe au modèle. C'est plus long à mettre en place mais rend le modèle autonome. Le fichier `config.py` est déjà écrit pour accueillir cette classe supplémentaire le jour où elle existera : il suffira d'ajouter un dossier `electronics/` dans les données et une entrée dans `CLASS_TO_BIN`.
+La seconde apprend au modèle à reconnaître l'électronique comme une septième classe à part entière, via `src/prepare_electronics_data.py`. Ce script télécharge le dataset Kaggle `kaanerkez/waste-classfication-dataset` (17 catégories, dont plusieurs appareils électroniques), fusionne les catégories listées dans `config.ELECTRONICS_SOURCE_CATEGORIES` (battery, keyboard, microwave, mobile, mouse, pcb, player, printer, television, washing machine) en une seule classe `electronics`, puis sous-échantillonne le résultat pour revenir au même ordre de grandeur que la taille moyenne des 6 classes existantes, avant de le répartir en train/val/test au même endroit que le reste des données. Le modèle passe ainsi de 6 à 7 classes sans qu'aucun autre fichier n'ait besoin d'être modifié : `dataset.py` et `train.py` lisent les noms de dossiers réellement présents dans `data/splits/`, pas une liste figée dans le code.
 
-La première option est déjà implémentée et prête à être branchée par l'application : `src/upstream_filters.py` expose `classify_before_image_model(nom_produit, categorie_produit)`, qui renvoie `"D3E"` si le nom ou la catégorie du produit correspond à un mot-clé de `config.D3E_KEYWORDS` ou `config.D3E_CATEGORIES`, `None` sinon. L'application doit appeler cette fonction avant `predict_image()` et ne solliciter le modèle que si elle renvoie `None`.
+Garder les deux mécanismes actifs en même temps est volontaire. Le filtre en amont reste utile comme premier passage rapide, avant même de charger le modèle ou l'image, et sert de garde-fou si un produit électronique a un nom ou une catégorie explicite. La classe entraînée prend le relais pour les cas où le texte ne suffit pas, en se basant directement sur l'apparence du produit.
 
 ## Verre d'emballage contre vaisselle
 
@@ -81,11 +82,14 @@ Toutes les commandes se lancent depuis le dossier `model/`.
 
 ```bash
 pip install -r requirements.txt
-python -m src.prepare_data      # télécharge le dataset Kaggle et le sépare en train/val/test
-python -m src.train              # entraîne le modèle, sauvegarde model/models/modele_eco_sort.h5
-python -m src.evaluate           # rapport de classification + matrice de confusion
+python -m src.prepare_data                # télécharge les 6 classes de base et les sépare en train/val/test
+python -m src.prepare_electronics_data    # ajoute la 7e classe "electronics" (D3E), équilibrée
+python -m src.train                        # entraîne le modèle, sauvegarde model/models/modele_eco_sort.h5
+python -m src.evaluate                     # rapport de classification + matrice de confusion
 python -m src.predict chemin/vers/une/image.jpg
 ```
+
+L'étape `prepare_electronics_data` est optionnelle : sans elle, le modèle s'entraîne normalement sur les 6 classes de base, et le D3E reste géré uniquement par le filtre en amont.
 
 Voir `data/README.md` pour la configuration de l'accès à l'API Kaggle.
 
