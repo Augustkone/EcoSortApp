@@ -1,7 +1,0 @@
-tensorflow>=2.18
-numpy
-pillow
-scikit-learn
-matplotlib
-kaggle
-split-folders
