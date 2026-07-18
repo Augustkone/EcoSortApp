@@ -6,7 +6,7 @@ Il s'agit de ramener les infos suivantes pour les cinq premiers produit du résu
 - Image du produit (lien)
 - Notation (sur 5)
 
-Package utilisé pour le scraping : beautifulsoup (scraping), request
+Package utilisé pour le scraping : beautifulsoup (craping), request
 
 """
 
@@ -86,7 +86,7 @@ def scrap_jumia(keyword: str, max_results: int = 5) -> list[dict]:
         prix = prix_tag.text if prix_tag else "Prix inconnu"
 
         img_tag = produit.find("img")
-        image_url = img_tag.get("data-src") or img_tag.get("src") if img_tag else None
+        image_url = (img_tag.get("data-src") or img_tag.get("src")) if img_tag else None
 
         stars_div = produit.find("div", class_="stars _s")
         note = stars_div.text.strip() if stars_div else "Pas de note"
@@ -96,8 +96,9 @@ def scrap_jumia(keyword: str, max_results: int = 5) -> list[dict]:
             "prix": prix,
             "image": image_url,
             "note": note,
-            "lien": lien_complet
-        })
+            "lien": lien_complet,
+            "categorie": keyword
+       })
     return resultats
 
 # Test de la fonction

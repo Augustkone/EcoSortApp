@@ -219,6 +219,7 @@ __marimo__/
 
 # Dataset Kaggle (trop volumineux pour Git, chacun le regenere localement)
 model/data/raw/
+model/data/raw_electronics/
 model/data/splits/
 
 # Checkpoint intermediaire d'entrainement, redondant avec le modele final .h5

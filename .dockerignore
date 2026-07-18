@@ -1,0 +1,12 @@
+.venv/
+venv/
+app/venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+model/data/raw/
+model/data/splits/
+model/data/jumia_samples/
+model/data/finetune/
+model/models/*_best.keras
